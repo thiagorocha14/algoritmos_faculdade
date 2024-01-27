@@ -1,0 +1,4 @@
+Processador: Ryzen 5 5600X
+GPU: GTX 1650
+RAM: 16GB
+S.O: Windows 11

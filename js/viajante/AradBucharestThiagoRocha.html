@@ -1,0 +1,101 @@
+<!-- Aluno: Thiago Rocha -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arad - Bucharest</title>
+</head>
+<body>
+    <h1>Arad - Bucharest</h1>
+    <h3>Escolha a cidade de partida: (Destino é sempre Bucharest))</h3>
+    <select name="partida" id="partida">
+        <option value="Arad">Arad</option>
+        <option value="Zerind">Zerind</option>
+        <option value="Oradea">Oradea</option>
+        <option value="Sibiu">Sibiu</option>
+        <option value="Timisoara">Timisoara</option>
+        <option value="Lugoj">Lugoj</option>
+        <option value="Mehadia">Mehadia</option>
+        <option value="Drobeta">Drobeta</option>
+        <option value="Craiova">Craiova</option>
+        <option value="Rimnicu">Rimnicu</option>
+        <option value="Fagaras">Fagaras</option>
+        <option value="Pitesti">Pitesti</option>
+    </select>
+    <button onclick="ativarBtn()">Encontrar</button>
+    <div id="result">
+
+    </div>
+<script>
+    const mapa = {
+            'Arad':      [{'Sibiu': 253}, {'Zerind': 374}, {'Timisoara': 329}],
+            'Zerind':    [{'Arad': 366}, {'Oradea': 380}],
+            'Oradea':    [{'Zerind': 374}, {'Sibiu': 253}],
+            'Sibiu':     [{'Arad': 366}, {'Oradea': 380}, {'Fagaras': 178}, {'Rimnicu': 193}],
+            'Timisoara': [{'Arad': 366}, {'Lugoj': 244}],
+            'Lugoj':     [{'Timisoara': 329}, {'Mehadia': 241}],
+            'Mehadia':   [{'Lugoj': 244}, {'Drobeta':242}],
+            'Drobeta':   [{'Mehadia': 241}, {'Craiova': 160}],
+            'Craiova':   [{'Drobeta':242}, {'Rimnicu': 193}, {'Pitesti': 98}],
+            'Rimnicu':   [{'Sibiu': 253}, {'Craiova': 160}, {'Pitesti': 98}],
+            'Fagaras':   [{'Sibiu': 253}, {'Bucharest': 0}],
+            'Pitesti':   [{'Rimnicu': 193}, {'Craiova': 160}, {'Bucharest': 0}],
+            'Bucharest': [{'Fagaras': 178}, {'Pitesti': 98}],
+    }
+    let cidadesJaVisitadas = [];
+
+    function ativarBtn(){
+        const partida = document.getElementById("partida").value;
+        document.getElementById("result").innerHTML = '';
+        cidadesJaVisitadas = [];
+        encontrarMelhorRota(partida, 'Bucharest');
+    }
+
+    function encontrarMelhorRota(partida, destino){
+
+        if (partida == destino){
+            const destino = document.createElement('h2');
+            destino.innerHTML = 'Você chegou ao seu destino!';
+            document.getElementById('result').appendChild(destino);
+
+            return;
+        }
+
+        cidadesJaVisitadas.push(partida);
+        let cidadeAtual = mapa[partida];
+
+        let nomeProximaCidade = '';
+        let distanciaProximaCidade = 0;
+
+        const cidadeAtualElemento = document.createElement('h2');
+        cidadeAtualElemento.innerHTML = 'Cidade Atual: ' + partida;
+
+        const cidadesVizinhasElemento = document.createElement('h5');
+        cidadesVizinhasElemento.innerHTML = 'Cidades Vizinhas: <br>';
+
+        cidadeAtual.forEach((cidadeVizinha) => {
+
+            for (const [nome, distancia] of Object.entries(cidadeVizinha)) {
+                cidadesVizinhasElemento.innerHTML += nome + ' - '+ distancia+'<br>';
+
+                if (!(cidadesJaVisitadas.includes(nome)) && (distanciaProximaCidade == 0 || distancia < distanciaProximaCidade)){
+                    nomeProximaCidade = nome;
+                    distanciaProximaCidade = distancia;
+                }
+
+            }
+        });
+
+        const cidadeProxima = document.createElement('h3');
+        cidadeProxima.innerHTML = 'Cidade mais próxima: ' + nomeProximaCidade;
+
+        document.getElementById('result').appendChild(cidadeAtualElemento);
+        document.getElementById('result').appendChild(cidadesVizinhasElemento);
+        document.getElementById('result').appendChild(cidadeProxima);
+        encontrarMelhorRota(nomeProximaCidade, destino);
+    }
+</script>
+</body>
+</html>
